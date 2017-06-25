@@ -15,6 +15,8 @@ app.use(express.static('public'));
 
 app.use('/blog-posts', blogPostRouter);
 
+let server;
+
 function runServer() {
   const port = process.env.PORT || 4500;
   return new Promise((resolve, reject) => {
@@ -44,5 +46,9 @@ function closeServer() {
 app.listen(process.env.PORT || 4500, () => {
 	console.log(`Your app is listening on port ${process.env.PORT || 4500}`);
 })
+
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
+};
 
 module.exports = {app, runServer, closeServer};
