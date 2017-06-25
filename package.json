@@ -1,11 +1,18 @@
 {
   "name": "blogposts",
   "version": "1.0.0",
-  "description": "blogPosts assignment",
+  "description": "",
   "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronleebrooks/blogPosts.git"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +21,9 @@
     "express": "^4.15.3",
     "morgan": "^1.8.2",
     "uuid": "^3.1.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/aaronleebrooks/blogPosts/issues"
+  },
+  "homepage": "https://github.com/aaronleebrooks/blogPosts#readme"
 }
