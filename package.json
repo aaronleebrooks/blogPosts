@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha ./test",
     "start": "node server.js"
   },
   "repository": {
@@ -25,5 +25,10 @@
   "bugs": {
     "url": "https://github.com/aaronleebrooks/blogPosts/issues"
   },
-  "homepage": "https://github.com/aaronleebrooks/blogPosts#readme"
+  "homepage": "https://github.com/aaronleebrooks/blogPosts#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.1.2"
+  }
 }
