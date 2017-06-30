@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
@@ -81,7 +82,7 @@ app.delete('/blog-posts/:id', (req, res) => {
   blogPost
     .findByIdAndRemove(req.params.id)
     .exec()
-    .then(restaurant => res.status(500).json({message: 'Internal server error'}));
+    .then(restaurant => res.status(500).json({message: 'Internal server error'}))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 
