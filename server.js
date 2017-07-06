@@ -6,19 +6,19 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const {PORT, DATABASE_URL} = require('./config');
-const {blogPost} = require('./models');
+const {BlogPost} = require('./models');
 
 const app = express();
+app.use(morgan('common'));
 app.use(bodyParser.json());
 
-app.get('/blog-posts', (req, res) => {
-  blogPost
-    .find().limit(10).exec().then(blogPosts => {
-      res.json({
-        blogPosts: blogPosts.map(
-          (blogPost) => blogPost.apiRepr())
-      });
-    })
+app.get('/posts', (req, res) => {
+  BlogPost
+    .find()
+    .exec()
+    .then(blogPosts =>{
+      res.json(blogPosts.map(blogPost => blogPost.apiRepr()));
+      })
     .catch(
       err =>{
         console.log(err);
@@ -26,10 +26,21 @@ app.get('/blog-posts', (req, res) => {
       })
 });
 
-app.post('/blog-posts', (req, res) =>{
+app.get('/posts/:id', (req, res) => {
+  BlogPost
+    .findById(req.params.id)
+    .exec()
+    .then(post => res.json(post.apiRepr()))
+    .catch(err => {
+      console.error(err);
+        res.status(500).json({message: 'Internal server error'})
+    });
+});
 
-  const requiredFields = ['title', 'content', 'author', 'publishDate'];
-  for (let i=0; i<requiredFields.length;i++){
+app.post('/posts', (req, res) =>{
+
+  const requiredFields = ['title', 'content', 'author'];
+  for (let i=0; i<requiredFields.length; i++){
     const field = requiredFields[i];
     if (!(field in req.body)) {
       const message = `Missing ${field} in request body`
@@ -38,15 +49,14 @@ app.post('/blog-posts', (req, res) =>{
     }
   }
 
-  blogPost
+  BlogPost
     .create({
     title:req.body.title,
     content: req.body.content,
     author: req.body.author,
-    publishDate: req.body.publishDate
     })
     .then(
-      blogPost => res.status(201).json(restaurant.apiRepr()))
+      blogPost => res.status(201).json(blogPost.apiRepr()))
     .catch(
       err =>{
         console.log(err);
@@ -54,7 +64,7 @@ app.post('/blog-posts', (req, res) =>{
       })
 });
 
-app.put('/blog-posts', (req, res) => {
+app.put('/posts', (req, res) => {
   if (req.params.id !== req.body.id) {
   const message = (
     `Request path id ${req.params.id} and request body id ${req.body.id} must match`);
@@ -63,7 +73,7 @@ app.put('/blog-posts', (req, res) => {
   }
 
   const toUpdate = {};
-  const updateableFields = ['title', 'content', 'author', 'publishDate'];
+  const updateableFields = ['title', 'content', 'author'];
 
   updateableFields.forEach(field =>{
     if (field in req.body){
@@ -71,18 +81,18 @@ app.put('/blog-posts', (req, res) => {
     }
   });
 
-  blogPost
+  BlogPost
     .findByIdAndUpdate(req.params.id)
     .exec()
-    .then(blogPost => res.status(204).end())
+    .then(newBlogPost => res.status(201).json(newBlogPost.apiRepr()))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 
-app.delete('/blog-posts/:id', (req, res) => {
-  blogPost
+app.delete('/posts/:id', (req, res) => {
+  BlogPost
     .findByIdAndRemove(req.params.id)
     .exec()
-    .then(restaurant => res.status(500).json({message: 'Internal server error'}))
+    .then(blogPost => res.status(204).json({message: 'success'}))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 })
 
@@ -98,7 +108,7 @@ function runServer(databaseUrl=DATABASE_URL, port=PORT) {
     })
     server = app.listen(port, () => {
       console.log(`Your app is listening on port ${port}`);
-      resolve(server);
+      resolve();
     })
     .on('error', err => {
       mongoose.disconnect();
