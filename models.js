@@ -23,7 +23,7 @@ blogPostSchema.methods.apiRepr = function() {
   };
 }
 
-const BlogPost = mongoose.model('BlogPost', blogPostSchema);
+const BlogPost = mongoose.model('posts', blogPostSchema);
 
 module.exports = {BlogPost};
 
